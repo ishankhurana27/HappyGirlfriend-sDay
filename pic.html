@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Moments Together</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Quicksand:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #fff0f5;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 48px;
+            color: #e75480;
+            margin: 0;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #444;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+        .memory-card {
+            position: relative;
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .memory-card:hover {
+            transform: scale(1.03);
+        }
+        .memory-image {
+            width: 100%;
+            height: 280px;
+            background-size: cover;
+            background-position: center;
+        }
+        .memory-message {
+            padding: 15px;
+            font-size: 16px;
+            color: #333;
+            text-align: center;
+        }
+        .tooltip {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.85);
+            color: #e75480;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Quicksand', sans-serif;
+        }
+        .gallery-carousel {
+            display: none;
+        }
+        .cta-button {
+            display: block;
+            width: fit-content;
+            margin: 40px auto 0;
+            padding: 12px 24px;
+            font-size: 18px;
+            background-color: #e75480;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: background-color 0.3s;
+        }
+        .cta-button:hover {
+            background-color: #d1446f;
+        }
+        @media (max-width: 768px) {
+            .gallery-grid {
+                display: none;
+            }
+            .gallery-carousel {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 20px;
+            }
+            .carousel-container {
+                display: flex;
+                gap: 16px;
+            }
+            .carousel-container .memory-card {
+                flex: 0 0 80%;
+            }
+        }
+        .doodle {
+            position: absolute;
+            font-size: 30px;
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .floating-tooltip {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 240, 245, 0.95);
+            color: #e75480;
+            font-family: 'Dancing Script', cursive;
+            font-size: 18px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+            animation: fadeinout 3s ease-in-out;
+        }
+        @keyframes fadeinout {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating doodles -->
+    <div class="doodle">💞</div>
+    <div class="doodle">🌈</div>
+    <div class="doodle">😘</div>
+    <div class="doodle">🧁</div>
+    <div class="doodle">💌</div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Our Moments Together</h1>
+            <p class="subtitle">Every picture tells our beautiful story 💕</p>
+        </div>
+
+        <!-- Desktop Grid Gallery -->
+        <div class="gallery-grid" id="desktopGallery"></div>
+
+        <!-- Mobile Carousel Gallery -->
+        <div class="gallery-carousel" id="mobileGallery">
+            <div class="carousel-container"></div>
+        </div>
+
+        <a href="last.html" class="cta-button">Ready for the Surprise? 💖</a>
+    </div>
+
+    <div id="tooltip" class="floating-tooltip"></div>
+
+    <script>
+        const photos = [
+            { url: 'image.jpg', message: 'First date magic ✨', tooltip: 'You looked like a dream here 😍' },
+            { url: 'image2.jpg', message: 'That smile that stole my heart', tooltip: 'My heart still skips a beat... 💓' },
+            //{ url: 'image3.jpg', message: 'Our first adventure together', tooltip: 'This moment is still my favorite 🌸' },
+            { url: 'image5.jpg', message: 'Lost in your beautiful eyes', tooltip: 'Your eyes >>> the universe 🌌' },
+            { url: 'image4.jpg', message: 'Perfectly imperfect moments', tooltip: "Perfect doesn't exi... wait, you do 💫" },
+            { url: 'image6.jpg', message: 'Butterflies every single time', tooltip: "Still can't believe you're mine 🥰" },
+            { url: 'image7.jpg', message: 'The beginning of always', tooltip: 'Forever starts here 💍' },
+        ];
+
+        const desktopGallery = document.getElementById('desktopGallery');
+        const mobileGallery = document.querySelector('.carousel-container');
+        const tooltipEl = document.getElementById('tooltip');
+
+        photos.forEach(photo => {
+            const desktopCard = document.createElement('div');
+            desktopCard.className = 'memory-card';
+            desktopCard.innerHTML = `
+                <div class="tooltip">${photo.tooltip}</div>
+                <div class="memory-image" style="background-image: url('${photo.url}');"></div>
+                <div class="memory-message">${photo.message}</div>
+            `;
+            desktopGallery.appendChild(desktopCard);
+
+            const mobileCard = document.createElement('div');
+            mobileCard.className = 'memory-card';
+            mobileCard.setAttribute('data-message', photo.tooltip);
+            mobileCard.innerHTML = `
+                <div class="memory-image" style="background-image: url('${photo.url}');"></div>
+                <div class="memory-message">${photo.message}</div>
+            `;
+            mobileCard.addEventListener('click', () => {
+                tooltipEl.innerText = mobileCard.dataset.message;
+                tooltipEl.style.display = 'block';
+                setTimeout(() => {
+                    tooltipEl.style.display = 'none';
+                }, 3000);
+            });
+            mobileGallery.appendChild(mobileCard);
+        });
+    </script>
+</body>
+</html>
